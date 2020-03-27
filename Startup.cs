@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Shop.Data;
 
 namespace Shop
 {
@@ -15,13 +16,20 @@ namespace Shop
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            // Informa qual tipo de banco será usado
+            services.AddDbContext<DataContext>(opt => opt.UseSqlServer("Database"));
+
+            // Verifica se já existe um DataContext na memória e informa 
+            // ao Controller para usar este, sem abrir uma nova conexão
+            // com o banco de dados. Após usar, ele encerra e deleta
+            // a conexão
+            services.AddScoped<DataContext, DataContext>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
