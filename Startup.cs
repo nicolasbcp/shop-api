@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,8 +21,9 @@ namespace Shop
         {
             services.AddControllers();
 
-            // Informa qual tipo de banco será usado
-            services.AddDbContext<DataContext>(opt => opt.UseSqlServer("Database"));
+            // Informa qual BD será usado
+            services.AddDbContext<DataContext>(
+                opt => opt.UseSqlServer(Configuration.GetConnectionString("connectionString")));
 
             // Verifica se já existe um DataContext na memória e informa 
             // ao Controller para usar este, sem abrir uma nova conexão
